@@ -17,19 +17,19 @@ import "https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"
 
 var canvas = document.getElementById("renderCanvas");
 
-        var startRenderLoop = function (engine, canvas) {
-            engine.runRenderLoop(function () {
-                if (sceneToRender && sceneToRender.activeCamera) {
-                    sceneToRender.render();
-                }
-            });
-        }
+    var startRenderLoop = function (engine, canvas) {
+        engine.runRenderLoop(function () {
+            if (sceneToRender && sceneToRender.activeCamera) {
+                sceneToRender.render();
+            }
+        });
+    }
 
-        var engine = null;
-        var scene = null;
-        var sceneToRender = null;
-        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
-        var delayCreateScene = async function () {
+    var engine = null;
+    var scene = null;
+    var sceneToRender = null;
+    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+    var delayCreateScene = async function () {
     
     var scene = new BABYLON.Scene(engine);
 
@@ -179,33 +179,31 @@ var canvas = document.getElementById("renderCanvas");
 
     return scene;
 };
-                window.initFunction = async function() {
-                    
-                    
-                    
-                    var asyncEngineCreation = async function() {
-                        try {
-                        return createDefaultEngine();
-                        } catch(e) {
-                        console.log("the available createEngine function failed. Creating the default engine instead");
-                        return createDefaultEngine();
-                        }
-                    }
 
-                    window.engine = await asyncEngineCreation();
-                    
-                    const engineOptions = window.engine.getCreationOptions?.();
-                    if (!engineOptions || engineOptions.audioEngine !== false) {
-                        
-                    }
-        if (!engine) throw 'engine should not be null.';
-        startRenderLoop(engine, canvas);
-        window.scene = delayCreateScene();};
-        initFunction().then(() => {scene.then(returnedScene => { sceneToRender = returnedScene; });
+window.initFunction = async function() {
+    var asyncEngineCreation = async function() {
+        try {
+        return createDefaultEngine();
+        } catch(e) {
+        console.log("the available createEngine function failed. Creating the default engine instead");
+        return createDefaultEngine();
+        }
+    }
+    
+    engine = await asyncEngineCreation();
+    window.engine = engine;
+    
+    const engineOptions = window.engine.getCreationOptions?.();
+    if (!engineOptions || engineOptions.audioEngine !== false) {
         
-                    });
+    }
+if (!engine) throw 'engine should not be null.';
+startRenderLoop(engine, canvas);
+scene = delaycreateScene();
+window.scene = scene;
+initFunction().then(() => {scene.then(returnedScene => { sceneToRender = returnedScene; });});
 
-                    // Resize
-                    window.addEventListener("resize", function () {
-                        engine.resize();
-                    });
+// Resize
+window.addEventListener("resize", function () {
+    engine.resize();
+});
