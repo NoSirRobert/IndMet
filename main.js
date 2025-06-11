@@ -1,4 +1,4 @@
-import "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js";
+//import "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js";
 import "https://assets.babylonjs.com/generated/Assets.js";
 import "https://cdn.babylonjs.com/recast.js";
 import "https://cdn.babylonjs.com/ammo.js";
