@@ -1,4 +1,3 @@
-//import "https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js";
 import "https://assets.babylonjs.com/generated/Assets.js";
 import "https://cdn.babylonjs.com/recast.js";
 import "https://cdn.babylonjs.com/ammo.js";
@@ -12,106 +11,102 @@ import "https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min
 import "https://cdn.babylonjs.com/loaders/babylonjs.loaders.js";
 import "https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js";    
 import "https://cdn.babylonjs.com/gui/babylon.gui.min.js";  
-import "https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"
-import "https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"
+import "https://cdn.babylonjs.com/addons/babylonjs.addons.min.js";
+import "https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js";
 
 var canvas = document.getElementById("renderCanvas");
 
-    var startRenderLoop = function (engine, canvas) {
-        engine.runRenderLoop(function () {
-            if (sceneToRender && sceneToRender.activeCamera) {
-                sceneToRender.render();
-            }
-        });
-    }
+var startRenderLoop = function (engine, canvas) {
+    engine.runRenderLoop(function () {
+        if (sceneToRender && sceneToRender.activeCamera) {
+            sceneToRender.render();
+        }
+    });
+};
 
-    var engine = null;
-    var scene = null;
-    var sceneToRender = null;
-    var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
-    var delayCreateScene = async function () {
-    
-    var scene = new BABYLON.Scene(engine);
+var engine = null;
+var scene = null;
+var sceneToRender = null;
 
-    var camera = new BABYLON.ArcRotateCamera("Camera", 1 * Math.PI / 4, Math.atan(Math.sqrt(2)), 25, new BABYLON.Vector3(-15, 0, 0), scene);
-    
-    scene.activeCamera.panningInertia = 200
-    scene.activeCamera.wheelDeltaPercentage = 0.035
-    scene.activeCamera.upperRadiusLimit = 100
-    scene.activeCamera.allowUpsideDown = false
-    scene.activeCamera.lowerRadiusLimit = 1
+var createDefaultEngine = function() { 
+    return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false }); 
+};
+
+var delayCreateScene = async function () {
+
+    scene = new BABYLON.Scene(engine);
+
+    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 4, Math.atan(Math.sqrt(2)), 25, new BABYLON.Vector3(-15, 0, 0), scene);
+
+    scene.activeCamera.panningInertia = 200;
+    scene.activeCamera.wheelDeltaPercentage = 0.035;
+    scene.activeCamera.upperRadiusLimit = 100;
+    scene.activeCamera.allowUpsideDown = false;
+    scene.activeCamera.lowerRadiusLimit = 1;
     camera.attachControl(canvas, true);
 
     var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
     const env = scene.createDefaultEnvironment({
-    groundSize: 100,  // Set the size of the ground to 100 units
-    createSkybox: false,  // Optional: set the size of the skybox
-    enableGroundShadow: true,  // Optional: enable shadows on the ground
-   });
+        groundSize: 100,
+        createSkybox: false,
+        enableGroundShadow: true
+    });
 
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [env.ground],
         uiOptions: {
-            sessionMode: 'immersive-ar',
-        },
-        
+            sessionMode: 'immersive-ar'
+        }
     });
-  
-    //Achse und Ursprung Angfang
+
     var showAxis = function(size) {
         var makeTextPlane = function(text, color, size) {
-        var dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
-        dynamicTexture.hasAlpha = true;
-        dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color , "transparent", true);
-        var plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
-        plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
-        plane.material.backFaceCulling = false;
-        plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
-        plane.material.diffuseTexture = dynamicTexture;
-        return plane;
+            var dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", 50, scene, true);
+            dynamicTexture.hasAlpha = true;
+            dynamicTexture.drawText(text, 5, 40, "bold 36px Arial", color, "transparent", true);
+            var plane = new BABYLON.Mesh.CreatePlane("TextPlane", size, scene, true);
+            plane.material = new BABYLON.StandardMaterial("TextPlaneMaterial", scene);
+            plane.material.backFaceCulling = false;
+            plane.material.specularColor = new BABYLON.Color3(0, 0, 0);
+            plane.material.diffuseTexture = dynamicTexture;
+            return plane;
         };
     
         var axisX = BABYLON.Mesh.CreateLines("axisX", [ 
-        new BABYLON.Vector3.Zero(), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, 0.05 * size, 0), 
-        new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, -0.05 * size, 0)
+            new BABYLON.Vector3.Zero(), new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, 0.05 * size, 0), 
+            new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, -0.05 * size, 0)
         ], scene);
         axisX.color = new BABYLON.Color3(1, 0, 0);
+
         var xChar = makeTextPlane("X", "red", size / 10);
         xChar.position = new BABYLON.Vector3(0.9 * size, -0.05 * size, 0);
+
         var axisY = BABYLON.Mesh.CreateLines("axisY", [
-            new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3( -0.05 * size, size * 0.95, 0), 
-            new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3( 0.05 * size, size * 0.95, 0)
-            ], scene);
+            new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3(-0.05 * size, size * 0.95, 0), 
+            new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3(0.05 * size, size * 0.95, 0)
+        ], scene);
         axisY.color = new BABYLON.Color3(0, 1, 0);
+
         var yChar = makeTextPlane("Y", "green", size / 10);
         yChar.position = new BABYLON.Vector3(0, 0.9 * size, -0.05 * size);
+
         var axisZ = BABYLON.Mesh.CreateLines("axisZ", [
-            new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0 , -0.05 * size, size * 0.95),
-            new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0, 0.05 * size, size * 0.95)
-            ], scene);
+            new BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3(0, -0.05 * size, size * 0.95),
+            new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3(0, 0.05 * size, size * 0.95)
+        ], scene);
         axisZ.color = new BABYLON.Color3(0, 0, 1);
+
         var zChar = makeTextPlane("Z", "blue", size / 10);
         zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.9 * size);
     };
+
     showAxis(5);
 
-    // Dictionary to store references to each imported model's meshes
     const importedMeshes = {};
 
-    // List of models to import
     const models = [
-        /*{ url: "https://dl.dropboxusercontent.com/scl/fi/p7s679q8h59goql621zgg/AGV_small.glb?rlkey=djpotepo9wjb3485nlyl5togz&st=b6ixune2&dl=0", name: "AGV_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/3thqtm1dhyhfniicf80g2/Beam_small.glb?rlkey=qc8jlqgcatfcryrzmr05d84sy&st=yjfp2ib1&dl=0", name: "Beam_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/5w72nruzbpanm5vcvd0lt/DMC_small.glb?rlkey=3xt6y52tcyyey7k9mkcjovx0a&st=hb8d04gh&dl=0", name: "DMC_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/7dqb0ovyjijkcemtla22p/DMU_small.glb?rlkey=bz2wga1x2gcn02scoob6wlqnt&st=cykxh9dk&dl=0", name: "DMU_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/7mrcasbapoi3v0uckur71/E500_small.glb?rlkey=8sodj8l8td27n3t88db51brm1&st=8im161j5&dl=0", name: "E500_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/a0zhkmurzc7ud2w0ia2gj/FZ12_small.glb?rlkey=fuq4a9ioixz3weq2zby6cdho8&st=cbc9mhwc&dl=0", name: "FZ12_small", position: new BABYLON.Vector3(21, 0, 0) },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/bex7ny6h6x5qmxd6x4mq7/G350_small.glb?rlkey=lnyk73a64ztn8o1fj5awg1j9j&st=q3llac4s&dl=0", name: "G350_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/onclvx9kf5zyom2tpyq7r/GR300C_small.glb?rlkey=prnieztov62w5omnq0xo6yjuz&st=bt2nzqmd&dl=0", name: "GR300C_small" },
-        { url: "https://dl.dropboxusercontent.com/scl/fi/uya41m3i43oj7ohkyh90w/Roboter_small.glb?rlkey=k8qirho2kt6q9wk8owudzd1zq&st=puoccowm&dl=0", name: "Roboter_small" }
-         */
         { url: "assets/DMC_small.glb", name: "DMC_small" },
         { url: "assets/AGV_small.glb", name: "AGV_small" },
         { url: "assets/Beam_small.glb", name: "Beam_small" },
@@ -121,23 +116,18 @@ var canvas = document.getElementById("renderCanvas");
         { url: "assets/G350_small.glb", name: "G350_small" },
         { url: "assets/GR300C_small.glb", name: "GR300C_small" },
         { url: "assets/Roboter_small.glb", name: "Roboter_small" }
-        // Add more models as needed
     ];
 
-    // Function to import a model
     const importModel = (model) => {
         return BABYLON.SceneLoader.ImportMeshAsync("", model.url, model.name, scene)
             .then((result) => {
                 const meshes = result.meshes;
                 if (meshes.length > 0) {
-                    // Store the mesh using model name as key for easy access
                     importedMeshes[model.name] = meshes;
-                    
+
                     const firstMesh = meshes[0];
                     firstMesh.bakeCurrentTransformIntoVertices();
-                    //firstMesh.addBehavior(new BABYLON.SixDofDragBehavior());
                     
-                    // Apply initial position if specified
                     if (model.position) {
                         firstMesh.position = model.position;
                     }
@@ -147,10 +137,8 @@ var canvas = document.getElementById("renderCanvas");
             });
     };
 
-    // Import all models
     models.forEach(importModel);
 
-    // Function to toggle visibility for a specific model by name
     const toggleVisibility = (name) => {
         const modelMeshes = importedMeshes[name];
         if (modelMeshes) {
@@ -162,7 +150,6 @@ var canvas = document.getElementById("renderCanvas");
         }
     };
 
-    // Function to enable or disable a specific model by name
     const setEnabled = (name, enabled) => {
         const modelMeshes = importedMeshes[name];
         if (modelMeshes) {
@@ -174,36 +161,35 @@ var canvas = document.getElementById("renderCanvas");
         }
     };
 
-    // Example usage to disable a specific model:
-    // setEnabled("Beam_small", false);
-
     return scene;
 };
 
 window.initFunction = async function() {
     var asyncEngineCreation = async function() {
         try {
-        return createDefaultEngine();
+            return createDefaultEngine();
         } catch(e) {
-        console.log("the available createEngine function failed. Creating the default engine instead");
-        return createDefaultEngine();
+            console.log("The available createEngine function failed. Creating the default engine instead");
+            return createDefaultEngine();
         }
     }
     
     engine = await asyncEngineCreation();
     window.engine = engine;
-    
-    const engineOptions = window.engine.getCreationOptions?.();
-    if (!engineOptions || engineOptions.audioEngine !== false) {
-        
-    }
-if (!engine) throw 'engine should not be null.';
-startRenderLoop(engine, canvas);
-scene = delaycreateScene();
-window.scene = scene;
-initFunction().then(() => {scene.then(returnedScene => { sceneToRender = returnedScene; });});
 
-// Resize
+    if (!engine) throw 'Engine should not be null.';
+    startRenderLoop(engine, canvas);
+    scene = delayCreateScene();
+    window.scene = scene;
+    scene.then(returnedScene => { sceneToRender = returnedScene; });
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+    initFunction();
+});
+
 window.addEventListener("resize", function () {
-    engine.resize();
+    if (engine) {
+        engine.resize();
+    }
 });
