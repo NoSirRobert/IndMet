@@ -143,14 +143,14 @@
 // Usage example:
 // Assume 'scene' is your existing Babylon.js scene
 const mqttOptions = {
-    host: 'your-broker-url', // Use the HiveMQ Cloud broker URL
-    port: 8883, // Typically the port for secure MQTT connections (TLS)
+    host: 'f0d057008a574826b730a17d20041783.s1.eu.hivemq.cloud:8884/mqtt', // Use the HiveMQ Cloud broker URL
+    port: 8884, // Typically the port for secure MQTT connections (TLS)
     protocol: 'wss', // Use 'wss' for secure WebSocket connections
 };
 
 // Provide your HiveMQ credentials here
-const username = 'your-username';
-const password = 'your-password';
+const username = 'babylon';
+const password = '1Basstölpel';
 
 // Create an instance of the MqttInfoDisplay with the existing scene
 const infoDisplay = new MqttInfoDisplay(scene, mqttOptions, 'your-topic-name', username, password);
