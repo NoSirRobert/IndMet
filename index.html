@@ -23,6 +23,7 @@
         <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
         <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
         <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
         <style>
             html,
@@ -84,6 +85,77 @@
     createSkybox: false,  // Optional: set the size of the skybox
     enableGroundShadow: true,  // Optional: enable shadows on the ground
    });
+//mqtt info display
+
+    const mqtt = window.mqtt; // Ensure mqtt is available globally
+
+    // Define the MqttInfoDisplay class
+   class MqttInfoDisplay {
+    constructor(scene, mqttOptions, topic, username, password) {
+        this.scene = scene;
+        this.mqttOptions = mqttOptions;
+        this.topic = topic;
+        
+        // Include username and password in options
+        this.mqttOptions.username = username;
+        this.mqttOptions.password = password;
+        
+        // Connect to MQTT broker
+        this.connectMqtt();
+
+        // Create a plane in the existing scene to display information
+        this.infoPlane = BABYLON.MeshBuilder.CreatePlane("infoPlane", { width: 2, height: 1 }, this.scene);
+        this.infoPlane.position = new BABYLON.Vector3(0, 1, 0); // Adjust the position as necessary
+    }
+
+    connectMqtt() {
+        const client = mqtt.connect(this.mqttOptions);
+
+        client.on('connect', () => {
+            console.log('Connected to MQTT broker');
+            client.subscribe(this.topic, (err) => {
+                if (!err) {
+                    console.log(`Subscribed to topic: ${this.topic}`);
+                }
+            });
+        });
+
+        client.on('message', (topic, message) => {
+            const data = JSON.parse(message.toString());
+            this.displayInfo(data.name, data.productionState);
+        });
+    }
+
+    displayInfo(name, productionState) {
+        const infoText = `Name: ${name}\nProduction State: ${productionState}`;
+
+        // Create a dynamic texture for the display
+        const dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", { width: 512, height: 256 }, this.scene);
+        dynamicTexture.drawText(infoText, null, 100, "20px Arial", "black", "white");
+
+        // Apply the dynamic texture to the plane
+        const material = new BABYLON.StandardMaterial("infoMaterial", this.scene);
+        material.diffuseTexture = dynamicTexture;
+        this.infoPlane.material = material;
+    }
+}
+
+// Usage example:
+// Assume 'scene' is your existing Babylon.js scene
+const mqttOptions = {
+    host: 'your-broker-url', // Use the HiveMQ Cloud broker URL
+    port: 8883, // Typically the port for secure MQTT connections (TLS)
+    protocol: 'wss', // Use 'wss' for secure WebSocket connections
+};
+
+// Provide your HiveMQ credentials here
+const username = 'your-username';
+const password = 'your-password';
+
+// Create an instance of the MqttInfoDisplay with the existing scene
+const infoDisplay = new MqttInfoDisplay(scene, mqttOptions, 'your-topic-name', username, password);
+
+/////////ende mqtt info display
 
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [env.ground],
