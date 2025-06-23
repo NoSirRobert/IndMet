@@ -102,7 +102,7 @@
         
         // Connect to MQTT broker
         this.connectMqtt();
-
+console.log("Connecting to MQTT broker with options:", this.mqttOptions);   
         // Create a plane in the existing scene to display information
         this.infoPlane = BABYLON.MeshBuilder.CreatePlane("infoPlane", { width: 2, height: 1 }, this.scene);
         this.infoPlane.position = new BABYLON.Vector3(0, 1, 0); // Adjust the position as necessary
