@@ -103,7 +103,7 @@
       console.log('Connected to HiveMQ Cloud via WSS!');
       client.subscribe('test/topic', function (err) {
         if (!err) {
-          client.publish('test/topic', 'Hello from Web!');
+          client.publish('test/topic', 'Hello from ' + clientId);
         }
       });
     });
@@ -116,83 +116,6 @@
     client.on('error', function (err) {
       console.error('Connection error:', err);
     });
-    // Ensure the MQTT client is closed when the scene is disposed
-
-//mqtt info display
-
-/*This code snippet creates a class that connects to an MQTT broker and displays information on a plane in a Babylon.js scene.
-It uses the MQTT.js library to handle the connection and message subscription, and it creates a dynamic texture to display the information on the plane.
-Make sure to include the MQTT.js library in your project for this code to work.
-
-    const mqtt = window.mqtt; // Ensure mqtt is available globally
-
-    // Define the MqttInfoDisplay class
-   class MqttInfoDisplay {
-    constructor(scene, mqttOptions, topic, username, password) {
-        this.scene = scene;
-        this.mqttOptions = mqttOptions;
-        this.topic = topic;
-        
-        // Include username and password in options
-        this.mqttOptions.username = username;
-        this.mqttOptions.password = password;
-        
-        // Connect to MQTT broker
-        this.connectMqtt();
-console.log("Connecting to MQTT broker with options:", this.mqttOptions);   
-        // Create a plane in the existing scene to display information
-        this.infoPlane = BABYLON.MeshBuilder.CreatePlane("infoPlane", { width: 2, height: 1 }, this.scene);
-        this.infoPlane.position = new BABYLON.Vector3(0, 1, 0); // Adjust the position as necessary
-    }
-
-    connectMqtt() {
-        const client = mqtt.connect(this.mqttOptions);
-
-        client.on('connect', () => {
-            console.log('Connected to MQTT broker');
-            client.subscribe(this.topic, (err) => {
-                if (!err) {
-                    console.log(`Subscribed to topic: ${this.topic}`);
-                }
-            });
-        });
-
-        client.on('message', (topic, message) => {
-            const data = JSON.parse(message.toString());
-            this.displayInfo(data.name, data.productionState);
-        });
-    }
-
-    displayInfo(name, productionState) {
-        const infoText = `Name: ${name}\nProduction State: ${productionState}`;
-
-        // Create a dynamic texture for the display
-        const dynamicTexture = new BABYLON.DynamicTexture("DynamicTexture", { width: 512, height: 256 }, this.scene);
-        dynamicTexture.drawText(infoText, null, 100, "20px Arial", "black", "white");
-
-        // Apply the dynamic texture to the plane
-        const material = new BABYLON.StandardMaterial("infoMaterial", this.scene);
-        material.diffuseTexture = dynamicTexture;
-        this.infoPlane.material = material;
-    }
-}
-
-// Usage example:
-// Assume 'scene' is your existing Babylon.js scene
-const mqttOptions = {
-    hostname: 'f0d057008a574826b730a17d20041783.s1.eu.hivemq.cloud',
-    protocol: 'wss',
-    url: 'wss://f0d057008a574826b730a17d20041783.s1.eu.hivemq.cloud:8884/mqtt', // Use the HiveMQ Cloud broker URL
-};
-
-// Provide your HiveMQ credentials here
-const username = 'babylon';
-const password = '1Basstölpel';
-
-// Create an instance of the MqttInfoDisplay with the existing scene
-const infoDisplay = new MqttInfoDisplay(scene, mqttOptions, 'hello', username, password);
-
-*/
 
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [env.ground],
