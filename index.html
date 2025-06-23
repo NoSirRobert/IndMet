@@ -85,7 +85,42 @@
     createSkybox: false,  // Optional: set the size of the skybox
     enableGroundShadow: true,  // Optional: enable shadows on the ground
    });
+
+       // Replace with your HiveMQ Cloud cluster details
+    const options = {
+      username: 'babylon',
+      password: '1Basstölpel',
+      clientId: 'webclient_' + Math.random().toString(16).substr(2, 8),
+      clean: true,
+      connectTimeout: 4000,
+      reconnectPeriod: 4000
+    };
+
+    // Use WSS protocol and the correct port (usually 8884 for HiveMQ Cloud)
+    const client = mqtt.connect('wss://f0d057008a574826b730a17d20041783.s1.eu.hivemq.cloud:8884/mqtt', options);
+
+    client.on('connect', function () {
+      console.log('Connected to HiveMQ Cloud via WSS!');
+      client.subscribe('test/topic', function (err) {
+        if (!err) {
+          client.publish('test/topic', 'Hello from Web!');
+        }
+      });
+    });
+
+    client.on('message', function (topic, message) {
+      // message is a Buffer
+      console.log('Received:', topic, message.toString());
+    });
+
+    client.on('error', function (err) {
+      console.error('Connection error:', err);
+    });
 //mqtt info display
+
+/*This code snippet creates a class that connects to an MQTT broker and displays information on a plane in a Babylon.js scene.
+It uses the MQTT.js library to handle the connection and message subscription, and it creates a dynamic texture to display the information on the plane.
+Make sure to include the MQTT.js library in your project for this code to work.
 
     const mqtt = window.mqtt; // Ensure mqtt is available globally
 
@@ -153,9 +188,9 @@ const username = 'babylon';
 const password = '1Basstölpel';
 
 // Create an instance of the MqttInfoDisplay with the existing scene
-const infoDisplay = new MqttInfoDisplay(scene, mqttOptions, 'your-topic-name', username, password);
+const infoDisplay = new MqttInfoDisplay(scene, mqttOptions, 'hello', username, password);
 
-/////////ende mqtt info display
+*/
 
     const xr = await scene.createDefaultXRExperienceAsync({
         floorMeshes: [env.ground],
