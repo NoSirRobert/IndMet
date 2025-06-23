@@ -103,7 +103,7 @@
       console.log('Connected to HiveMQ Cloud via WSS!');
       client.subscribe('test/topic', function (err) {
         if (!err) {
-          client.publish('test/topic', 'Hello from ' + clientId);
+          client.publish('test/topic', 'Hello from Web!');
         }
       });
     });
