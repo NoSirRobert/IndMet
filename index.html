@@ -116,6 +116,8 @@
     client.on('error', function (err) {
       console.error('Connection error:', err);
     });
+    // Ensure the MQTT client is closed when the scene is disposed
+    
 //mqtt info display
 
 /*This code snippet creates a class that connects to an MQTT broker and displays information on a plane in a Babylon.js scene.
