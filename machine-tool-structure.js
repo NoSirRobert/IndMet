@@ -1,4 +1,4 @@
-// Methode 1: Direkte Integration in das bestehende async Script
+// Machine Tool Data Handler Script
 (async function() {
   
   // OPC UA Machine Tool Datenstruktur direkt im Script definieren
